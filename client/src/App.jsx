@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import Analytics from "./Pages/Analytics";
 import Links from "./Pages/Links";
 
 export default function App() {
@@ -12,7 +13,7 @@ export default function App() {
       
       <Routes>
         <Route path="/" element={<Links />} />
-        <Route path="/analytics" element={<h1 className="text-white p-6">Analytics Page</h1>} />
+        <Route path="/analytics" element={<Analytics />} />
       </Routes>
 
 

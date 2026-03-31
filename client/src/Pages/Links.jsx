@@ -61,21 +61,7 @@ const shorten = async () => {
 
 </div>
 
-<div>
 
-    <h1 className="text-xl mb-4">Links Dashboard</h1>
-      {links.map((l) => (
-        <div key={l._id}>
-          <p>{l.originalUrl}</p>
-          <a
-  href={`http://localhost:5000/${l.shortCode}`}
-  target="_blank"
->
-  http://localhost:5000/{l.shortCode}
-</a>
-        </div>
-      ))}
-</div>
 
 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     <div className="bg-[#11161c] border border-gray-800 p-4 rounded-lg">
