@@ -86,7 +86,45 @@ router.post('/shorten', async (req, res) => {
         });
     }
 });
+// route to get aggregated data for analytics page 
+router.get('/analytics',async(req,res)=>{
+    try{
+        const allClick=await Click.find().populate('url');
 
+        let tottalClicks=0;
+        let countryMap={};
+        let linkStats=[];
+
+        allClick.forEach(click=>{
+            tottalClicks+=click.totalClicks || 0;
+            
+            //country stats
+            (click.countries|| []).forEach(country=>{
+                countryMap[country.name]=(countryMap[country.name] || 0)+country.count;
+            });
+            //link stats
+            if(click.url){
+                    linkStats.push({
+                        shortCode:click.url.shortCode,
+                        clicks:click.totalClicks
+                    });
+                }
+            });
+            // concert map to response form
+            res.json({
+                tottalClicks,
+                countries:countryMap,
+                links:linkStats
+            });
+    }
+    catch(err){
+        console.error(err);
+        console.log(err);
+        res.status(500).json({
+            error:"server error"});
+    
+    }
+})
 
 router.get('/:shortCode', async (req, res) => {
     try {
@@ -141,5 +179,7 @@ router.get('/:shortCode', async (req, res) => {
         });
     }
 });
+
+
 
 module.exports = router;
