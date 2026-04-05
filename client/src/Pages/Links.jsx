@@ -1,9 +1,16 @@
-
 import { useEffect, useState } from "react";
+import PerformanceCard from "../components/PerformanceCard";
+
 
 const Links = () => {
  const [url, setUrl] = useState("");
   const [links, setLinks] = useState([]);
+  const [data,setdata]=useState(null);
+
+    useEffect(()=>{
+        fetch("http://localhost:5000/analytics")
+        .then(res=>res.json()).then(setdata).catch(err=>console.error(err));
+    },[]);
 
   const fetchLinks = async () => {
   const res = await fetch("http://localhost:5000/urls");
@@ -37,6 +44,8 @@ const shorten = async () => {
 };
   return (
     <>
+    <div className="min-h- screen bg-[#0b0f14] text-white flex justify-center">
+      <div className="w-full max-w-6xl px-6 py-4">
    <div className="bg-[#11161c] border border-gray-800 rounded-xl p-6 mb-6">
 
   <p className="text-xs text-gray-400 mb-4 tracking-widest">
@@ -61,27 +70,11 @@ const shorten = async () => {
 
 </div>
 
-
-
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-    <div className="bg-[#11161c] border border-gray-800 p-4 rounded-lg">
-        <p className="text-xs text-gray-400">Total Links</p>
-        <h2 className="text-2xl font-bold text-gray">{totalLinks}</h2>
-    </div>
-    <div className="bg-[#11161c] border border-gray-800 p-4 rounded-lg">
-        <p className="text-xs text-gray-400">Total Clicks</p>
-        <h2 className="text-2xl font-bold text-gray">{0}</h2>
-    </div>
-    <div className="bg-[#11161c] border border-gray-800 p-4 rounded-lg">
-        <p className="text-xs text-gray-400">Total Links</p>
-        <h2 className="text-2xl font-bold text-gray">
-            
-            {links[0]?.shortCode || "-"}
-        </h2>
-    </div>
-</div>
-{/* <Links table */}
-      <div className="bg-[#11161c] border border-gray-800 rounded-xl">
+        <div>
+                <PerformanceCard data={data} />
+            </div>
+            {/* <Links table */}
+      <div className="bg-[#11161c] border border-gray-800 rounded-xl mt-6">
         <div className="p-4 border-b border-gray-800 text-gray-400 text-sm">All Links</div>
 
         {links.map((link) => (
@@ -103,6 +96,8 @@ const shorten = async () => {
                 </div>
             </div>
 ))}
+        </div>
+        </div>
         </div>
     </>
   )

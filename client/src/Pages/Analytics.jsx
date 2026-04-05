@@ -28,9 +28,9 @@ export default function Analytics() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <TopLinksSection data={data} />
                     <CountryStats data={data} />
+            
             </div>
-                <PerformanceCard data={data} />
-            </div>
+        </div>
         </div>
         </div>
         </div>
