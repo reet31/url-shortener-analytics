@@ -6,7 +6,7 @@ const Links = () => {
  const [url, setUrl] = useState("");
   const [links, setLinks] = useState([]);
   const [data,setdata]=useState(null);
-
+  const [openId,setopenId]=useState(null);
     useEffect(()=>{
         fetch("http://localhost:5000/analytics")
         .then(res=>res.json()).then(setdata).catch(err=>console.error(err));
@@ -44,25 +44,25 @@ const shorten = async () => {
 };
   return (
     <>
-    <div className="min-h- screen bg-[#0b0f14] text-white flex justify-center">
+    <div className="min-h- screen bg-[#0f0d0a] text-[#e8e0d0] flex justify-center">
       <div className="w-full max-w-6xl px-6 py-4">
-   <div className="bg-[#11161c] border border-gray-800 rounded-xl p-6 mb-6">
+   <div className="bg-[#1a1510] border border-[#2a2318] rounded-xl p-6 mb-6">
 
-  <p className="text-xs text-gray-400 mb-4 tracking-widest">
+  <p className="text-xs text-[#a09070]  mb-4 tracking-widest">
     CREATE SHORT LINK
   </p>
 
-  <div className="flex gap-4">
+  <div className="flex gap-4 ">
     <input
       value={url}
       onChange={(e) => setUrl(e.target.value)}
       placeholder="Paste your long URL"
-      className="flex-1 bg-[#0b0f14] border border-gray-700 rounded-lg px-4 py-2 text-white"
+      className="flex-1 bg-[#1a1510] border border-[#2a2318] rounded-lg px-4 py-2 text-[#e8e0d0] placeholder:text-[#6b5d4a]"
     />
 
     <button
       onClick={shorten}
-      className="bg-green-400 text-black px-6 py-2 rounded-lg font-semibold"
+      className="bg-[#d4a853] text-[#0f0d0a] px-6 py-2 rounded-lg font-semibold"
     >
       Shorten →
     </button>
@@ -74,31 +74,86 @@ const shorten = async () => {
                 <PerformanceCard data={data} />
             </div>
             {/* <Links table */}
-      <div className="bg-[#11161c] border border-gray-800 rounded-xl mt-6">
-        <div className="p-4 border-b border-gray-800 text-gray-400 text-sm">All Links</div>
+      <div className="bg-[#1a1510] border border-[#2a2318] rounded-xl mt-6">
+        <div className="p-4 border-b border-[#2a2318] text-[#a09070] text-sm">All Links</div>
 
-        {links.map((link) => (
-            <div
-            key={link._id}
-            className="p-4 border-b border-gray-800 flex justify-between items-center">
-                <p className="text-green-400">
-                    http://localhost:5000/{link.shortCode}</p>
-                <p className="text-gray-500 text-sm"> 
-                    {link.originalUrl}
-                </p>
-                <div className="flex gap-2">
-                    <button onClick={()=>
-                        navigator.clipboard.writeText(`http://localhost:5000/${link.shortCode}`)}
-                        className="text-sm text-gray-400 hover:text-gray-200">
-                        Copy
-                    </button>
-                    
-                </div>
+        {links.map((link) => {
+  const analytics = data?.links?.find(
+    (item) => item.shortCode === link.shortCode
+  );
+
+  return (
+    <div
+      key={link._id}
+      className="p-4 border-b border-[#2a2318] last:border-0 cursor-pointer"
+    >
+      <div
+        onClick={() =>
+          setopenId(openId === link._id ? null : link._id)
+        }
+        className="flex justify-between items-center cursor-pointer"
+      >
+        <p className="text-[#a09070]">
+          http://localhost:5000/{link.shortCode}
+        </p>
+
+        <p className="text-[#6b5d4a] text-sm truncate max-w-xs">
+          {link.originalUrl}
+        </p>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation(); // 🔥 important
+            navigator.clipboard.writeText(
+              `http://localhost:5000/${link.shortCode}`
+            );
+          }}
+          className="text-sm text-[#a09070] hover:text-[#e8e0d0]"
+        >
+          Copy
+        </button>
+      </div>
+
+      {openId === link._id && (
+        analytics ? (
+          <div className="mt-4 border-t border-[#2a2318] pt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-[#e8e0d0]">
+
+            <div>
+              <p className="text-[#6b5d4a] text-xs">CREATED</p>
+              <p>{new Date(analytics.createdAt).toLocaleDateString()}</p>
             </div>
-))}
-        </div>
-        </div>
-        </div>
+
+            <div>
+              <p className="text-[#6b5d4a] text-xs">TOP COUNTRY</p>
+              <p>{analytics.topcountry}</p>
+            </div>
+
+            <div>
+              <p className="text-[#6b5d4a] text-xs">TOP BROWSER</p>
+              <p>{analytics.topbrowser}</p>
+            </div>
+
+            <div>
+              <p className="text-[#6b5d4a] text-xs">AVG / DAY</p>
+              <p>{analytics.avgperday}</p>
+            </div>
+            
+
+          </div>
+        ) : (
+          <div className="mt-4 text-[#a09070]">
+            No analytics data available
+          </div>
+        )
+      )}
+    </div>
+  );
+})}
+      </div>
+      </div>
+    </div>
+
+    
     </>
   )
 } 

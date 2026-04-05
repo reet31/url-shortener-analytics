@@ -11,15 +11,15 @@ export default function Analytics() {
         fetch("http://localhost:5000/analytics")
         .then(res=>res.json()).then(setdata).catch(err=>console.error(err));
     },[]);
-    
+    console.log(data);
     return (
-        <div className="min-h-screen bg-[#0b0f14] text-white flex justify-center">
+        <div className="min-h-screen bg-[#0f0d0a] text-white flex justify-center">
   <div className="w-full max-w-6xl px-4 py-6">
         <div className="max-w-6xl mx-auto px-4 py-6 text-white">
             <h1  className="text-2xl font-bold mb-2">
                 Analytics Page
             </h1>
-            <p className="text-gray-400 mb-6">
+            <p className="text-[#d4a853] mb-6">
                 Last 7 days across all Links
             </p>
             <div className="space-y-6">    

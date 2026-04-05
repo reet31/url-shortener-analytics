@@ -7,9 +7,9 @@ export default function CountryStats({data}) {
    const total=countries.reduce((sum,[,val])=>sum+val,0);
    return (
     <>
-    <div className="bg-[#11161c] border border-gray-800 p-6 rounded-xl">
+    <div className="bg-[#0f0d0a] border border-[#2a2318] p-6 rounded-xl">
 
-    <p className="text-xs text-gray-400 mb-4">
+    <p className="text-xs text-[#a09070] mb-4">
       CLICKS BY COUNTRY
     </p>
 
@@ -24,9 +24,9 @@ export default function CountryStats({data}) {
           <span>{percent}%</span>
         </div>
 
-        <div className="w-full h-2 bg-gray-800 rounded mt-1">
+        <div className="w-full h-2 bg-[#2a2318] rounded mt-1">
           <div
-            className="h-2 bg-green-400 rounded"
+            className="h-2 bg-[#d4a853] rounded"
             style={{ width: `${percent}%` }}
           ></div>
         </div>

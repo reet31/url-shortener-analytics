@@ -94,27 +94,60 @@ router.get('/analytics',async(req,res)=>{
         let tottalClicks=0;
         let countryMap={};
         let linkStats=[];
+        let dailyClick=[0,0,0,0,0,0,0];
 
         allClick.forEach(click=>{
+            const now = Date.now();
+            if(!click.lastClickedAt) return;
+            const lastClicked= new Date(click.lastClickedAt);
+            const diffDays=Math.floor((now-lastClicked)/(1000*60*60*24));   
+                    if(diffDays>=0 && diffDays<7){
+                    dailyClick[6-diffDays]+=click.totalClicks || 0;
+            }
+            console.log("Click date :", lastClicked);
+            if(diffDays>=0 && diffDays<7){
+                dailyClick[6-diffDays]+=(click.totalClicks || 0);
+            }
+ 
+
+
             tottalClicks+=click.totalClicks || 0;
             
-            //country stats
+            const topcountry=click.countries.sort((a,b)=>b.count-a.count)[0]?.name || 'Unknown';
+            const topbrowser=click.browsers.sort((a,b)=>b.count-a.count)[0]?.name || 'Unknown';
+            const clicks = click.totalClicks || 0;
+
+            const created = new Date(click.url?.createdAt).getTime();
+            
+            const days = Math.max(
+                      1,
+                      Math.ceil((now - created) / (1000 * 60 * 60 * 24))
+                    );
+
+            const avgperday = (clicks / days).toFixed(1);
+               //country stats
             (click.countries|| []).forEach(country=>{
                 countryMap[country.name]=(countryMap[country.name] || 0)+country.count;
             });
+            console.log(click.totalClicks, click.url?.createdAt);
             //link stats
             if(click.url){
                     linkStats.push({
+
+                        createdAt:click.url.createdAt,
+                        topcountry
+                        ,topbrowser,
+                        avgperday,
                         shortCode:click.url.shortCode,
                         clicks:click.totalClicks
                     });
                 }
             });
-            // concert map to response form
             res.json({
                 tottalClicks,
                 countries:countryMap,
-                links:linkStats
+                links:linkStats,
+                clicks:dailyClick,
             });
     }
     catch(err){
@@ -122,7 +155,6 @@ router.get('/analytics',async(req,res)=>{
         console.log(err);
         res.status(500).json({
             error:"server error"});
-    
     }
 })
 
