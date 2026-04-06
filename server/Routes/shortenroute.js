@@ -160,6 +160,9 @@ router.get('/analytics',async(req,res)=>{
 
 router.get('/:shortCode', async (req, res) => {
     try {
+        console.log('IP:', req.headers['x-forwarded-for']);
+        console.log('Socket IP:', req.socket.remoteAddress);
+        console.log('All headers:', req.headers);
         const { shortCode } = req.params;
 
         const url = await Url.findOne({ shortCode });
@@ -176,7 +179,23 @@ router.get('/:shortCode', async (req, res) => {
         const browser = parser.getBrowser().name || 'Unknown';
 
         const referrer = req.get('Referrer') || 'Direct';
-        const country = req.headers['cf-ipcountry'] || 'Unknown';
+        let ip = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress ;
+        if(ip==='::1' || ip==='127.0.0.1'){
+            ip=null;
+        }
+        let country='Unknown';
+    if(ip){
+        try{
+            const geo=await fetch(`http://ip-api.com/json/${ip}`);
+            const geoData=await geo.json();
+            console.log("Geo data:", geoData);
+            country=geoData.country || 'Unknown';
+        }catch{
+            console.error(error);
+            country='Unknown';
+        }
+    }
+    
 
         let analytics = await Click.findOne({ url: url._id });
 
@@ -193,7 +212,7 @@ router.get('/:shortCode', async (req, res) => {
 
         analytics.totalClicks += 1;
         analytics.lastClickedAt = new Date();
-
+        console.log('country',country);
         updateCountArray(analytics.browsers, 'name', browser);
         updateCountArray(analytics.devices, 'deviceType', device);
         updateCountArray(analytics.countries, 'name', country);

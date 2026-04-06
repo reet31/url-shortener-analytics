@@ -7,7 +7,7 @@ import { Link, NavLink } from "react-router-dom";
 
       {/* Logo */}
       <h1 className="text-xl font-bold text-white">
-        LNK<span className="text-[#d4a853]">.IO</span>
+        Clip<span className="text-[#d4a853]">.Trace</span>
       </h1>
 
       {/* Nav links */}
