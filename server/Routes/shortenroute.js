@@ -160,11 +160,8 @@ router.get('/analytics',async(req,res)=>{
 
 router.get('/:shortCode', async (req, res) => {
     try {
-        console.log('IP:', req.headers['x-forwarded-for']);
-        console.log('Socket IP:', req.socket.remoteAddress);
-        console.log('All headers:', req.headers);
+        
         const { shortCode } = req.params;
-
         const url = await Url.findOne({ shortCode });
 
         if (!url) {
@@ -188,7 +185,6 @@ router.get('/:shortCode', async (req, res) => {
         try{
             const geo=await fetch(`http://ip-api.com/json/${ip}`);
             const geoData=await geo.json();
-            console.log("Geo data:", geoData);
             country=geoData.country || 'Unknown';
         }catch{
             console.error(error);
