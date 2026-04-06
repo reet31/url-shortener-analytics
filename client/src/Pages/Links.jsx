@@ -42,6 +42,12 @@ const shorten = async () => {
   setUrl("");
   fetchLinks();
 };
+const deleteLink=async(id)=>{
+  await fetch(`http://localhost:5000/urls/${id}`,{
+    method:"DELETE"
+  });
+  fetchLinks();
+}
   return (
     <>
     <div className="min-h- screen bg-[#0f0d0a] text-[#e8e0d0] flex justify-center">
@@ -100,10 +106,18 @@ const shorten = async () => {
         <p className="text-[#6b5d4a] text-sm truncate max-w-xs">
           {link.originalUrl}
         </p>
-
         <button
           onClick={(e) => {
-            e.stopPropagation(); // 🔥 important
+            e.stopPropagation(); 
+           deleteLink(link._id);
+          }}
+          className="text-sm text-red-400 hover:text-red-300"
+        >
+          Delete 
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation(); 
             navigator.clipboard.writeText(
               `http://localhost:5000/${link.shortCode}`
             );

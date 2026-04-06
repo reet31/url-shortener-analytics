@@ -20,10 +20,13 @@ function updateCountArray(arr, key, value) {
     }
 }
 
-router.get('/health', (req, res) => {
-    res.json({ status: 'ok' });
+router.delete('/urls/:id', async (req, res) => {
+    const url=await Url.findByIdAndDelete(req.params.id);
+    if(url){
+        await Click.findOneAndDelete({url:url._id});
+    }
+    res.json({message:"Deleted"});
 });
-
 router.get('/urls',async(req,res)=>{
     try{
         const urls =await Url.find().sort({ createdAt: -1 });
